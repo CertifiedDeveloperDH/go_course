@@ -63,7 +63,7 @@ func main(){
 	
 	fmt.Println("Products Car")
 	fmt.Println("Total Products: ", len(car.Products))
-	fmt.Println("Total Car %.2f\n", car.Total())
+	fmt.Printf("Total Car %.2f\n", car.Total())
 	fmt.Println()
 }
 
