@@ -7,11 +7,11 @@ import (
 )
 
 type User struct{
-	ID int `json:"id, omitempty"`
-	Name string `json:"name, omitempty"`
-	Address string `json:"address, omitempty"`
-	Age uint8 `json:"age, omitempty"`
-	LastName string `json:"last_name, omitempty"`
+	ID int `json:"id"`
+	Name string `json:"name"`
+	Address string `json:"address"`
+	Age uint8 `json:"age"`
+	LastName string `json:"last_name"`
 }
 
 func (u User) Display(){
@@ -35,5 +35,35 @@ func main(){
 	user.Display()
 	user.SetName("Azul")
 	user.Display()
+
+	p1 := commerce.Product{
+		Name: "Heladera marca sarasa",
+		Price: 200000,
+		Type: commerce.Type{
+			Code: "A",
+			Description: "Electrodomestico",
+		},
+		Tags: []string{"heladera", "freezer", "saraza", "refrigerador"},
+		Count: 5,
+	}
+	
+	p2 := commerce.Product{
+		Name: "Naranja",
+		Price: 50,
+		Type: commerce.Type{
+			Code: "B",
+			Description: "Alimento",
+		},
+		Tags: []string{"alimento", "verdura"},
+		Count: 20,
+	}
+	
+	car := commerce.NewCar(1234)
+	car.AddProducts(p1, p2)
+	
+	fmt.Println("Products Car")
+	fmt.Println("Total Products: ", len(car.Products))
+	fmt.Println("Total Car %.2f\n", car.Total())
+	fmt.Println()
 }
 

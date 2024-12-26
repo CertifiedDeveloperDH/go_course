@@ -38,5 +38,5 @@ func (c Car) Total() float64 {
 }
 
 func NewCar (userID uint) Car {
-	return Car{UserID: : userID}
+	return Car{UserID: userID}
 }
