@@ -8,11 +8,11 @@ import (
 	"github.com/CertifiedDeveloperDH/go_course/proyecto/internal/user"
 )
 
-func NewLogger() *log.Logger{
+func NewLogger() *log.Logger {
 	return log.New(os.Stdout, "", log.LstdFlags|log.Lshortfile)
 }
 
-func NewDB() user.DB{
+func NewDB() user.DB {
 	return user.DB{
 		Users: []domain.User{{
 			ID:        1,
@@ -32,4 +32,4 @@ func NewDB() user.DB{
 		}},
 		MaxUserID: 3,
 	}
-}	
+}

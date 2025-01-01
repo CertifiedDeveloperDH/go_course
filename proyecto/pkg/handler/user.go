@@ -27,6 +27,14 @@ func UserServer(ctx context.Context, endpoints user.Endpoints) func(w http.Respo
 				encodeError,
 			)
 			return
+		case http.MethodPost:
+			tran.Server(
+				transport.Endpoint(endpoints.Create),
+				decodeCreateUser,
+				encodeResponse,
+				encodeError,
+			)
+			return
 		}
 		InvalidMethod(w)
 	}
@@ -34,6 +42,14 @@ func UserServer(ctx context.Context, endpoints user.Endpoints) func(w http.Respo
 
 func decodeGetAllUser(ctx context.Context, r *http.Request) (interface{}, error) {
 	return nil, nil
+}
+
+func decodeCreateUser(ctx context.Context, r *http.Request) (interface{}, error) {
+	var req user.CreateReq
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		return nil, fmt.Errorf("invalid request format: '%v'", err.Error())
+	}
+	return req, nil
 }
 
 func encodeResponse(ctx context.Context, w http.ResponseWriter, resp interface{}) error {
