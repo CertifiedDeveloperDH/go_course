@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/CertifiedDeveloperDH/go_course/proyecto/internal/user"
 	"github.com/CertifiedDeveloperDH/go_course/proyecto/pkg/transport"
@@ -23,60 +24,59 @@ func UserServer(ctx context.Context, endpoints user.Endpoints) func(w http.Respo
 	return func(w http.ResponseWriter, r *http.Request) {
 		url := r.URL.Path
 		log.Println(r.Method, ": ", url)
-		path , pathSize := transport.Clean(url)
-
-		if pathSize < 3 || pathSize > 4 {
-			InvalidMethod(w)
-			return
-		}
+		path, pathSize := transport.Clean(url)
 
 		params := make(map[string]string)
-		if pathSize == 4 && path[2] != ""{
+		if pathSize == 4 && path[2] != "" {
 			params["userID"] = path[2]
 		}
-		ctx = context.WithValue(ctx, paramsKey, params)
-		tran := transport.New(w, r, ctx)
+		tran := transport.New(w, r, context.WithValue(ctx, paramsKey, params))
+
+		var end user.Controller
+		var deco func(ctx context.Context, r *http.Request) (interface{}, error)
+
 		switch r.Method {
 		case http.MethodGet:
 			switch pathSize {
 			case 3:
-				tran.Server(
-					transport.Endpoint(endpoints.GetAll),
-					decodeGetAllUser,
-					encodeResponse,
-					encodeError,
-				)
-				return
+				end = endpoints.GetAll
+				deco = decodeGetAllUser
 			case 4:
-				tran.Server(
-					nil,
-					decodeGetUser,
-					encodeResponse,
-					encodeError,
-				)
+				end = endpoints.Get
+				deco = decodeGetUser
 			}
 
 		case http.MethodPost:
-			switch pathSize{
+			switch pathSize {
 			case 3:
-				tran.Server(
-					transport.Endpoint(endpoints.Create),
-					decodeCreateUser,
-					encodeResponse,
-					encodeError,
-				)
-				return
+				end = endpoints.Create
+				deco = decodeCreateUser
 			}
 		}
-		InvalidMethod(w)
+
+		if end != nil && deco != nil {
+			tran.Server(
+				transport.Endpoint(end),
+				deco,
+				encodeResponse,
+				encodeError,
+			)
+		} else {
+			InvalidMethod(w)
+		}
 	}
 }
 
 func decodeGetUser(ctx context.Context, r *http.Request) (interface{}, error) {
-	params := ctx.Value(paramsKey).(map[string] string)
-	fmt.Println(params)
-	fmt.Println(params["UserID"])
-	return nil, fmt.Errorf("my error")
+	params := ctx.Value(paramsKey).(map[string]string)
+
+	id, err := strconv.ParseUint(params["userID"], 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	return user.GetReq{
+		ID: id,
+	}, nil
 }
 
 func decodeGetAllUser(ctx context.Context, r *http.Request) (interface{}, error) {

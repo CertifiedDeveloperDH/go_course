@@ -9,8 +9,9 @@ import (
 
 type (
 	Service interface {
-		Create(ctx context.Context, firstName, LastName, email string) (*domain.User, error)
+		Create(ctx context.Context, firstName, lastName, email string) (*domain.User, error)
 		GetAll(ctx context.Context) ([]domain.User, error)
+		Get(ctx context.Context, id uint64) (*domain.User, error)
 	}
 
 	service struct {
@@ -35,7 +36,6 @@ func (s service) Create(ctx context.Context, firstName, lastName, email string) 
 	if err := s.repo.Create(ctx, user); err != nil {
 		return nil, err
 	}
-	s.log.Println("service create")
 	return user, nil
 }
 
@@ -46,6 +46,9 @@ func (s service) GetAll(ctx context.Context) ([]domain.User, error) {
 		return nil, err
 	}
 
-	s.log.Println("service get all")
 	return users, nil
+}
+
+func (s service) Get(ctx context.Context, id uint64) (*domain.User, error){
+	return s.repo.Get(ctx, id)
 }
