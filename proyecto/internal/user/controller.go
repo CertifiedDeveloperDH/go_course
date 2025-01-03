@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"errors"
 	"fmt"
 )
 
@@ -26,7 +25,7 @@ type (
 	}
 
 	UpdateReq struct {
-		ID uint64
+		ID        uint64
 		FirstName *string `json:"first_name"`
 		LastName  *string `json:"last_name"`
 		Email     *string `json:"email"`
@@ -46,15 +45,11 @@ func makeCreateEndpoint(s Service) Controller {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateReq)
 		if req.FirstName == "" {
-			return nil, errors.New("first name is required")
+			return nil, ErrFirstNameRequired
 		}
 
 		if req.LastName == "" {
-			return nil, errors.New("last name is required")
-		}
-
-		if req.Email == "" {
-			return nil, errors.New("email is required")
+			return nil, ErrLastNameRequired
 		}
 
 		user, err := s.Create(ctx, req.FirstName, req.LastName, req.Email)
@@ -88,9 +83,17 @@ func makeGetEndpoint(s Service) Controller {
 	}
 }
 
-func makeUpdateEndpoint(s Service) Controller{
+func makeUpdateEndpoint(s Service) Controller {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(UpdateReq)
+		if req.FirstName != nil && *req.FirstName == "" {
+			return nil, ErrFirstNameRequired
+		}
+
+		if req.LastName != nil && *req.LastName == "" {
+			return nil, ErrLastNameRequired
+		}
+
 		if err := s.Update(ctx, req.ID, req.FirstName, req.LastName, req.Email); err != nil {
 			return nil, err
 		}
