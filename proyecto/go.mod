@@ -1,4 +1,4 @@
-module proyecto
+module github.com/CertifiedDeveloperDH/go_course/proyecto
 
 go 1.23.4
 
