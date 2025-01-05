@@ -1,2 +1,6 @@
+filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
+filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
 github.com/CertifiedDeveloperDH/go_course/proyecto_response v0.0.0-20250104130529-b155be30440c h1:EH85KiNaiPTJvcQ8ZL5VypsC/Ljvh/8qDJ+si0ZhLfg=
 github.com/CertifiedDeveloperDH/go_course/proyecto_response v0.0.0-20250104130529-b155be30440c/go.mod h1:iHfsaKB1C0XMe1lFfzO8HCAtzCvHN4K4CxSCWGjyJfA=
+github.com/go-sql-driver/mysql v1.8.1 h1:LedoTUt/eveggdHS9qUFC1EFSa8bU2+1pZjSRpvNJ1Y=
+github.com/go-sql-driver/mysql v1.8.1/go.mod h1:wEBSXgmK//2ZFJyE+qWnIsVGmvmEKlqwuVSjsCm7DZg=
