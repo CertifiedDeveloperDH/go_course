@@ -8,7 +8,7 @@ import (
 type SuccessResponse struct {
 	Message string `json:"message"`
 	Status  int    `json:"status"`
-	Data    interface{}
+	Data    interface{} `json:"data"`
 }
 
 func OK(msg string, data interface{}) Response{

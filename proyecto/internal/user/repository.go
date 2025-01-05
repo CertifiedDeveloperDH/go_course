@@ -4,7 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"log"
-
+	"fmt"
+	"strings"
 	"github.com/CertifiedDeveloperDH/go_course/proyecto/internal/domain"
 )
 
@@ -83,6 +84,16 @@ func (r *repo) GetAll(ctx context.Context) ([]domain.User, error) {
 }
 
 func (r *repo) Get(ctx context.Context, id uint64) (*domain.User, error){
+	sqlQ := "SELECT id, first_name, last_name, email FROM users WHERE id = ?"
+	var u domain.User
+	if err := r.db.QueryRow(sqlQ, id).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email); err != nil{
+		r.log.Println(err.Error())
+		if err == sql.ErrNoRows{
+			return nil, ErrNotFound{id}
+		}
+		return nil, err
+	}
+	r.log.Println("get user with id: ", id)
 	/*index := slices.IndexFunc(r.db.Users, func(v domain.User) bool{
 		return v.ID == id
 	})
@@ -90,10 +101,54 @@ func (r *repo) Get(ctx context.Context, id uint64) (*domain.User, error){
 	if index < 0 {
 		return nil,  ErrNotFound{id}
 	}*/
-	return nil, nil
+	return &u, nil
 }
 
 func (r *repo) Update(ctx context.Context, id uint64, firstName, lastName, email *string) error{
+	var fields []string
+	var values []interface{}
+
+	if firstName != nil {
+		fields = append(fields, "first_name=?")
+		values = append(values, *firstName)
+	}
+
+	if lastName != nil{
+		fields = append(fields, "last_name=?")
+		values = append(values, *lastName)
+	}
+
+	if email != nil {
+		fields = append(fields, "email=?")
+		values = append(values, *email)
+	}
+
+	if len(fields) == 0{
+		r.log.Println(ErrThereArentFields.Error())
+		return ErrThereArentFields
+	}
+
+	values = append(values, id)
+	sqlQ := fmt.Sprintf("UPDATE users SET %s WHERE id=?", strings.Join(fields, ","))
+	res, err := r.db.Exec(sqlQ, values...)
+	if err != nil{
+		r.log.Println(err.Error())
+		return err
+	}
+
+	row, err := res.RowsAffected()
+	if err != nil{
+		r.log.Println(err.Error())
+		return err
+	}
+
+	if row == 0{
+		err := ErrNotFound{id}
+		r.log.Println(err.Error())
+		return err
+	}
+
+	r.log.Println("user updated id: ", id)
 	/*user, err := r.Get(ctx, id)
 	if err != nil{
 		return err
