@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 
@@ -15,6 +16,8 @@ func NewLogger() *log.Logger {
 }
 
 func NewDB() (*sql.DB, error) {
+	fmt.Println("DATABASE_HOST:", os.Getenv("DATABASE_HOST"))
+	fmt.Println("DATABASE_PORT:", os.Getenv("DATABASE_PORT"))
 
 	dbURL := os.ExpandEnv("$DATABASE_USER:$DATABASE_PASSWORD@tcp($DATABASE_HOST:$DATABASE_PORT)/$DATABASE_NAME")
 	log.Println(dbURL)

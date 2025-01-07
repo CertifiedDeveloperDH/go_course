@@ -15,7 +15,7 @@ import (
 
 func main() {
 
-	_ = godotenv.Load()
+	_ = godotenv.Load("../.env")
 	//server := http.NewServeMux()
 
 	db, err := bootstrap.NewDB()
@@ -38,7 +38,7 @@ func main() {
 	port := os.Getenv("PORT")
 	fmt.Println("Server started at port ", port)
 
-	address := fmt.Sprintf("127.0.0.1:%s ", port)
+	address := fmt.Sprintf("127.0.0.1:%s", port)
 
 	srv := &http.Server{
 		Handler: accessControl(h),
